@@ -1,9 +1,14 @@
-FROM python:3.9-slim
-WORKDIR /code
+FROM python:3.9-slim AS builder
+WORKDIR /build
 COPY requirements.txt .
 
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip3 install -r requirements.txt && pip3 install gunicorn
+    pip3 install --prefix=/install -r requirements.txt && \
+    pip3 install --prefix=/install gunicorn
+
+FROM python:3.9-slim
+WORKDIR /code
+COPY --from=builder /install /usr/local
 
 COPY . .
 ENV REDIS_ADDRESS=redis \
