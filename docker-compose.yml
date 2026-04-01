@@ -1,1 +1,13 @@
-
+version: '3.8'
+services:
+  web:
+    container_name: app
+    build:
+      context: .
+    environment:
+      - REDIS_ADDRESS=redis
+      - REDIS_PORT=6379
+    ports:
+      - "8080:8000"
+  redis:
+    image: "redis:alpine"
